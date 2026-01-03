@@ -7,12 +7,13 @@ import com.itau.transferencia.http.requests.TransferRequest;
 import com.itau.transferencia.http.responses.TransferResponse;
 import com.itau.transferencia.repositories.TransferRepository;
 import com.itau.transferencia.services.CustomerService;
+import com.itau.transferencia.services.TransferLogService;
 import com.itau.transferencia.services.TransferService;
-import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,10 +22,16 @@ public class TransferServiceImpl implements TransferService {
     private static final Logger logger = LoggerFactory.getLogger(TransferServiceImpl.class);
     private final TransferRepository repository;
     private final CustomerService customerService;
+    private final TransferLogService transferLogService;
 
-    public TransferServiceImpl(TransferRepository repository, CustomerService customerService) {
+    public TransferServiceImpl(
+            TransferRepository repository,
+            CustomerService customerService,
+            TransferLogService transferLogService
+    ) {
         this.repository = repository;
         this.customerService = customerService;
+        this.transferLogService = transferLogService;
     }
 
     @Override
@@ -51,9 +58,10 @@ public class TransferServiceImpl implements TransferService {
 
             return repository.save(Transfer.ofCompleted(source, destination, amount));
         } catch (ObjectOptimisticLockingFailureException | BusinessException exception) {
+            logger.warn(exception.getMessage(), exception);
             var transfer = Transfer.ofFailed(source, destination, transferRequest.amount());
-            logger.error(exception.getMessage(), exception);
-            return repository.save(transfer);
+            transferLogService.save(transfer);
+            throw exception;
         }
     }
 
