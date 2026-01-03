@@ -1,60 +1,79 @@
-# API Transferências
+# 🏦 Transfer Service API
 
-Esta API permite a gestão de transferências bancárias entre contas.
-Através dela, é possível criar, listar e consultar transferências realizadas.
+Este projeto consiste em uma API RESTful para gerenciamento de clientes e realização de transferências financeiras,
+desenvolvida como parte do processo seletivo para Engenheiro de Software. A solução foca em **consistência de dados**, *
+*auditabilidade** e **escalabilidade**.
 
-## Tarefa
+## 🛠️ Tecnologias e Requisitos
 
-Desenvolva um projeto que exponha APIs no padrão RESTful e atenda às seguintes
-funcionalidades:
+* **Java 21** (LTS)
+* **Spring Boot 3**
+* **Spring Data JPA** com Banco de Dados **H2** (In-memory)
+* **Maven** (Gerenciador de dependências)
+* **SpringDoc OpenAPI (Swagger)** (Documentação)
+* **Bean Validation** (Validação de entradas)
 
-### Cadastro de Clientes
+## 🚀 Como Executar a Aplicação
 
-Um endpoint para cadastrar um cliente com as seguintes informações: ID (único), nome, número da conta (único) e saldo em
-conta.
+1. **Pré-requisitos**: Certifique-se de ter o **JDK 21** e o **Maven** instalados.
+2. **Clone o repositório**:
 
-### Listagem de Clientes
+```bash
+git clone https://github.com/barcellos-pedro/api-transferencia.git
+cd api-transferencia
+```
 
-Um endpoint para listar todos os clientes cadastrados.
+3. **Compile e execute**:
 
-### Busca de Cliente por Número da Conta
+```bash
+mvn spring-boot:run
+```
 
-Um endpoint para buscar um cliente pelo número da conta.
+4. **Acesse a API**: A aplicação estará disponível em `http://localhost:8080`.
+5. **Documentação Interativa (Swagger)**: Acesse `http://localhost:8080/swagger-ui/index.html` para testar os endpoints
+   no navegador
 
-### Transferência entre Contas
+## 📖 Endpoints Principais
 
-Um endpoint para realizar transferências entre duas contas.
-A conta de origem precisa ter saldo suficiente para a realização da transferência.
-O valor da transferência deve ser de no máximo R$ 10.000,00.
+A API segue o padrão RESTful e versionamento via URL (`/v1/...`):
 
-### Histórico de Transferências
+**Clientes**:
 
-Um endpoint para buscar as transferências relacionadas a uma conta, ordenadas por data decrescente.
-Lembre-se de que transferências sem sucesso também devem ser armazenadas.
+* `GET /v1/customers`: Listagem geral de clientes.
+* `POST /v1/customers`: Cadastro de novo cliente.
+* `GET /v1/customers/{account}`: Busca Cliente por número de conta.
+* `GET /v1/customers/{account}/transfers`: Histórico ordenado por data decrescente, incluindo falhas.
+* `POST /v1/customers/{account}/transfers`: Realiza transferência entre contas (Limite de R$ 10.000,00).
 
-## Endpoints
+## Decisões de Engenharia & Arquitetura
 
-- Cadastrar Clientes
-- Listar Clientes
-- Buscar Cliente por Número da Conta
-- Transferência entre Contas
-- Histórico de Transferências de uma Conta
+### 1. Resiliência no Histórico (Auditoria)
 
-## Entidades
+Conforme solicitado, transferências sem sucesso também são armazenadas. Para garantir que o registro de falha seja
+persistido mesmo quando a transação financeira sofrer rollback, utilizei a propagação **`REQUIRES_NEW`** no serviço de
+auditoria. Isso garante a integridade do histórico para conformidade bancária.
 
-Entidades/Tabelas do domínio da solução
+### 2. Controle de Concorrência
 
-### Cliente
+Para atender ao requisito de controle de concorrência na operação de transferência, foi implementado:
 
-- id (único)
-- nome
-- número da conta (único)
-- saldo em conta
+* **Pessimistic Locking** (ou **Optimistic Locking** com `@Version`): Para evitar o problema de "Lost Update" quando
+  dois processos tentam debitar da mesma conta simultaneamente.
 
-### Transferência
+### 3. Validação de Regras de Negócio
 
-- id
-- id_cliente_origem
-- id_cliente_destino
-- valor
-- data
+As regras de saldo suficiente e limite máximo de R$ 10.000,00 por operação foram centralizadas na camada de serviço,
+garantindo que o estado do banco de dados permaneça consistente.
+
+## 🧪 Testes
+
+A cobertura de testes foi priorizada para garantir a confiabilidade das transferências:
+
+* **Testes Unitários**: Validação de lógica de negócio e cálculos de saldo.
+* **Testes de Integração**: Fluxo completo de transferência simulando concorrência e rollback de banco de dados.
+
+Execute os testes com:
+
+```bash
+mvn test
+```
