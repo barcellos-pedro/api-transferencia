@@ -26,9 +26,9 @@ public class DevConfig {
     );
 
     public static final List<Transfer> TRANSFERS = List.of(
-            new Transfer(CUSTOMERS.getFirst(), CUSTOMERS.getLast(), BigDecimal.valueOf(250.99)),
-            new Transfer(CUSTOMERS.getFirst(), CUSTOMERS.get(1), BigDecimal.valueOf(100)),
-            new Transfer(CUSTOMERS.get(1), CUSTOMERS.getLast(), BigDecimal.valueOf(30))
+            Transfer.ofCompleted(CUSTOMERS.getFirst(), CUSTOMERS.getLast(), BigDecimal.valueOf(250.99)),
+            Transfer.ofCompleted(CUSTOMERS.getFirst(), CUSTOMERS.get(1), BigDecimal.valueOf(100)),
+            Transfer.ofCompleted(CUSTOMERS.get(1), CUSTOMERS.getLast(), BigDecimal.valueOf(30))
     );
 
     @Bean
