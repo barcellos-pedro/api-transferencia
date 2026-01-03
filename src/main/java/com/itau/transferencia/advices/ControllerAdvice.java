@@ -6,13 +6,13 @@ import com.itau.transferencia.http.responses.Errors;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import static com.itau.transferencia.advices.ControllerAdviceHelper.getErrorsMessage;
-import static com.itau.transferencia.exceptions.ErrorMessages.ACCOUNT_EXISTS;
-import static com.itau.transferencia.exceptions.ErrorMessages.BAD_JSON;
+import static com.itau.transferencia.exceptions.ErrorMessages.*;
 
 @RestControllerAdvice
 public class ControllerAdvice {
@@ -20,6 +20,11 @@ public class ControllerAdvice {
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<Errors> handleBusinessException(BusinessException exception) {
         return ErrorResponse.badRequest(exception);
+    }
+
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    public ResponseEntity<Errors> handleOptimisticLockingException(ObjectOptimisticLockingFailureException exception) {
+        return ErrorResponse.badRequest(OPTIMISTIC_LOCK);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
