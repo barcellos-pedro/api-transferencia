@@ -23,18 +23,18 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<Errors> handleUniqueConflict(DataIntegrityViolationException exception) {
+    public ResponseEntity<Errors> handleDataIntegrityException(DataIntegrityViolationException exception) {
         return ErrorResponse.conflict(ACCOUNT_EXISTS);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Errors> handleValidation(MethodArgumentNotValidException exception) {
+    public ResponseEntity<Errors> handleValidationException(MethodArgumentNotValidException exception) {
         var errors = getErrorsMessage(exception);
         return ErrorResponse.badRequest(errors);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<Errors> handleRequestBody(HttpMessageNotReadableException exception) {
+    public ResponseEntity<Errors> handleRequestBodyException(HttpMessageNotReadableException exception) {
         return ErrorResponse.badRequest(BAD_JSON);
     }
 }
