@@ -16,12 +16,12 @@ public class Transfer {
 
     @ManyToOne
     @JsonBackReference
-    @JoinColumn(name = "source_id", nullable = false)
+    @JoinColumn(name = "source_id")
     private Customer source;
 
     @ManyToOne
     @JsonBackReference
-    @JoinColumn(name = "destination_id", nullable = false)
+    @JoinColumn(name = "destination_id")
     private Customer destination;
 
     private BigDecimal amount;
@@ -45,10 +45,17 @@ public class Transfer {
         this.status = status;
     }
 
+    public static Transfer ofCompleted(Customer source, Customer destination, BigDecimal amount) {
+        return new Transfer(source, destination, amount, TransferStatus.COMPLETED);
+    }
+
+    public static Transfer ofFailed(Customer source, Customer destination, BigDecimal amount) {
+        return new Transfer(source, destination, amount, TransferStatus.FAILED);
+    }
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
-        this.status = TransferStatus.PENDING;
     }
 
     public Long getId() {
@@ -89,6 +96,14 @@ public class Transfer {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public TransferStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TransferStatus status) {
+        this.status = status;
     }
 
     @Override
