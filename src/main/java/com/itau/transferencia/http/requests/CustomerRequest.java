@@ -1,7 +1,7 @@
-package com.itau.transferencia.http;
+package com.itau.transferencia.http.requests;
 
+import com.itau.transferencia.validations.AccountNumber;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 
@@ -9,8 +9,7 @@ public record CustomerRequest(
         @NotBlank(message = "Name is required")
         String name,
 
-        @NotBlank(message = "Account is required")
-        @Size(min = 7, max = 7, message = "Account digits must be xxxxx-x")
+        @AccountNumber
         String account,
 
         BigDecimal balance

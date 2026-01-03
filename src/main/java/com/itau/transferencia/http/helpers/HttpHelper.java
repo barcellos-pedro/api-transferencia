@@ -1,6 +1,5 @@
-package com.itau.transferencia.http;
+package com.itau.transferencia.http.helpers;
 
-import com.itau.transferencia.entities.Customer;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -10,10 +9,10 @@ public class HttpHelper {
     private HttpHelper() {
     }
 
-    public static URI getLocation(Customer customer) {
+    public static URI getLocation(Long id) {
         return ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(Map.of("id", customer.getId()))
+                .buildAndExpand(Map.of("id", id))
                 .toUri();
     }
 }
