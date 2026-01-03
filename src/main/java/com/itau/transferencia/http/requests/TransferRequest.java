@@ -1,7 +1,9 @@
 package com.itau.transferencia.http.requests;
 
 import com.itau.transferencia.validations.AccountNumber;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 

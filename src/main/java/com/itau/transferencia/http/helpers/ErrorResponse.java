@@ -1,7 +1,6 @@
 package com.itau.transferencia.http.helpers;
 
 import com.itau.transferencia.http.responses.Errors;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
