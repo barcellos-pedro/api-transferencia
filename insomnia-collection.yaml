@@ -1,0 +1,176 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: Transferencia App
+meta:
+  id: wrk_e5a1807af290434bbc5b74fa673730d2
+  created: 1742516597172
+  modified: 1767362624549
+  description: ""
+collection:
+  - name: Customer
+    meta:
+      id: fld_97197e1bb56c4b1daa3a7acba8f3041e
+      created: 1767379307442
+      modified: 1767379307442
+      sortKey: -1767379307442
+      description: ""
+    children:
+      - url: "{{ _.url }}/v1/customers"
+        name: List Customers
+        meta:
+          id: req_501f8f5361c546019915e684fce209b3
+          created: 1767361207240
+          modified: 1767381137283
+          isPrivate: false
+          description: ""
+          sortKey: -1767379315333
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.2.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.url }}/v1/customers"
+        name: Create Customer
+        meta:
+          id: req_7dcceb451be2466b90f064d4189fa255
+          created: 1767362311675
+          modified: 1767397213492
+          isPrivate: false
+          description: ""
+          sortKey: -1767379315533
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"name": "Analu",
+            	"account":"00002-1"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.2.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.url }}/v1/customers/search"
+        name: Findy By Account Number
+        meta:
+          id: req_d977e527fd6743ccb3d164ebe4702e27
+          created: 1767364857204
+          modified: 1767397416954
+          isPrivate: false
+          description: ""
+          sortKey: -1767379315433
+        method: GET
+        parameters:
+          - name: account
+            value: 00002-1
+            description: ""
+            disabled: false
+        headers:
+          - name: User-Agent
+            value: insomnia/12.2.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.url }}/v1/customers/:account/transfers"
+        name: Transfer
+        meta:
+          id: req_3f03591695834cb7bdf16dafda189989
+          created: 1767377064715
+          modified: 1767397397089
+          isPrivate: false
+          description: ""
+          sortKey: -1767379315483
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"destination": "00002-1",
+            	"amount": 10.00
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.2.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+        pathParameters:
+          - name: account
+            value: 00001-1
+      - url: "{{ _.url }}/v1/customers/:account/transfers"
+        name: List Transfers
+        meta:
+          id: req_390cd9d1f4c34a148361c89ad3d553a2
+          created: 1767381164918
+          modified: 1767397435297
+          isPrivate: false
+          description: ""
+          sortKey: -1767379315283
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.2.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+        pathParameters:
+          - name: account
+            value: 00002-1
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_8c18d463bbe833afb5c10598d00ea79f436459d2
+    created: 1767361163955
+    modified: 1767361163955
+environments:
+  name: Base Environment
+  meta:
+    id: env_8c18d463bbe833afb5c10598d00ea79f436459d2
+    created: 1742516597174
+    modified: 1767364990184
+    isPrivate: false
+  data:
+    url: localhost:8080
