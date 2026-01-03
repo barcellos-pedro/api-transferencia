@@ -1,14 +1,16 @@
 package com.itau.transferencia.entities;
 
-import com.itau.transferencia.http.CustomerRequest;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.itau.transferencia.http.requests.CustomerRequest;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity(name = "customers")
 public class Customer {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,6 +22,17 @@ public class Customer {
 
     private BigDecimal balance = BigDecimal.ZERO;
 
+    @OneToMany(mappedBy = "source")
+    @JsonManagedReference
+    private List<Transfer> sentTransfers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "destination")
+    @JsonManagedReference
+    private List<Transfer> receivedTransfers = new ArrayList<>();
+
+    @Version
+    private Long version;
+
     public Customer() {
     }
 
@@ -29,14 +42,18 @@ public class Customer {
         this.balance = balance;
     }
 
-    public Customer(CustomerRequest dto) {
-        this.name = dto.name();
-        this.account = dto.account();
-        this.balance = dto.balance();
+    public Customer(CustomerRequest customerRequest) {
+        this.name = customerRequest.name();
+        this.account = customerRequest.account();
+        this.balance = customerRequest.balance();
     }
 
-    public static Customer fromRequest(CustomerRequest dto) {
-        return new Customer(dto);
+    public static Customer fromRequest(CustomerRequest customerRequest) {
+        return new Customer(customerRequest);
+    }
+
+    public boolean isSameAccount(Customer customer) {
+        return this.getAccount().equals(customer.getAccount());
     }
 
     public Long getId() {
@@ -71,6 +88,30 @@ public class Customer {
         this.balance = balance;
     }
 
+    public List<Transfer> getSentTransfers() {
+        return sentTransfers;
+    }
+
+    public void setSentTransfers(List<Transfer> sentTransfers) {
+        this.sentTransfers = sentTransfers;
+    }
+
+    public List<Transfer> getReceivedTransfers() {
+        return receivedTransfers;
+    }
+
+    public void setReceivedTransfers(List<Transfer> receivedTransfers) {
+        this.receivedTransfers = receivedTransfers;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Customer customer)) return false;
@@ -82,13 +123,10 @@ public class Customer {
         return Objects.hash(getId(), getAccount(), getName(), getBalance());
     }
 
+
     @Override
     public String toString() {
-        return "Customer{" +
-                "id=" + id +
-                ", account='" + account + '\'' +
-                ", name='" + name + '\'' +
-                ", balance=" + balance +
-                '}';
+        return "Customer{id=%d, account='%s', name='%s', balance=%s, sentTransfers=%s, receivedTransfers=%s, version=%d}"
+                .formatted(id, account, name, balance, sentTransfers, receivedTransfers, version);
     }
 }
