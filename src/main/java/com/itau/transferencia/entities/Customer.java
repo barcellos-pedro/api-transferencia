@@ -52,8 +52,12 @@ public class Customer {
         return new Customer(customerRequest);
     }
 
-    public boolean isSameAccount(Customer customer) {
-        return this.getAccount().equals(customer.getAccount());
+    public static boolean isSameAccount(Customer customer, Customer other) {
+        return customer.getAccount().equals(other.getAccount());
+    }
+
+    public boolean hasFundsToTransfer(BigDecimal amount) {
+        return this.getBalance().compareTo(amount) >= 0;
     }
 
     public Long getId() {
@@ -126,7 +130,7 @@ public class Customer {
 
     @Override
     public String toString() {
-        return "Customer{id=%d, account='%s', name='%s', balance=%s, sentTransfers=%s, receivedTransfers=%s, version=%d}"
-                .formatted(id, account, name, balance, sentTransfers, receivedTransfers, version);
+        return "Customer{id=%d, account='%s', name='%s', balance=%s,, version=%d}"
+                .formatted(id, account, name, balance, version);
     }
 }
