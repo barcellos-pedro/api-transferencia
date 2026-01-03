@@ -21,6 +21,6 @@ public enum TransferStatus {
 
     @Override
     public String toString() {
-        return "TransferStatus{status='%s'}".formatted(status);
+        return status;
     }
 }
