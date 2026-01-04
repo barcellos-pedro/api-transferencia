@@ -42,6 +42,12 @@ public class Customer {
         this.balance = balance;
     }
 
+    public Customer(String name, String account) {
+        this.name = name;
+        this.account = account;
+        this.balance = BigDecimal.ZERO;
+    }
+
     public Customer(CustomerRequest customerRequest) {
         this.name = customerRequest.name();
         this.account = customerRequest.account();
