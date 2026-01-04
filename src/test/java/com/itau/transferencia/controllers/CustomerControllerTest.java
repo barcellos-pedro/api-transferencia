@@ -4,6 +4,7 @@ import com.itau.transferencia.entities.TransferStatus;
 import com.itau.transferencia.http.requests.CustomerRequest;
 import com.itau.transferencia.http.requests.TransferRequest;
 import com.itau.transferencia.repositories.CustomerRepository;
+import com.itau.transferencia.repositories.TransferRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +16,7 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
 
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -40,11 +42,31 @@ class CustomerControllerTest {
     @Autowired
     private CustomerRepository customerRepository;
 
+    @Autowired
+    private TransferRepository transferRepository;
+
     @Test
     void getAll() throws Exception {
         mockMvc.perform(get("/v1/customers"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(3))
+                .andExpect(jsonPath("$[0].name").value("Pedro"))
+                .andExpect(jsonPath("$[0].account").value("00001-1"))
+                .andExpect(jsonPath("$[0].balance").value(100.00))
+                .andExpect(jsonPath("$[0].sentTransfers.length()").value(2))
+                .andExpect(jsonPath("$[0].sentTransfers[0].amount").value(250.99))
+                .andExpect(jsonPath("$[0].receivedTransfers").isEmpty())
+                .andDo(print());
+    }
+
+    @Test
+    void getAllReturnsEmptyList() throws Exception {
+        transferRepository.deleteAll();
+        customerRepository.deleteAll();
+
+        mockMvc.perform(get("/v1/customers"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0))
                 .andDo(print());
     }
 
@@ -59,13 +81,20 @@ class CustomerControllerTest {
     }
 
     @Test
+    void findByAccountNumberNotFound() throws Exception {
+        mockMvc.perform(get("/v1/customers/search?account=00000-0"))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
     void create() throws Exception {
         var account = "00009-9";
         var request = new CustomerRequest("test", account, BigDecimal.ZERO);
 
         mockMvc.perform(post("/v1/customers")
                         .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .content(requestBody(request)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("test"))
                 .andExpect(jsonPath("$.account").value(account))
@@ -77,11 +106,72 @@ class CustomerControllerTest {
     }
 
     @Test
+    void createFailsWithNegativeBalance() throws Exception {
+        var request = new CustomerRequest("Test", "12345-6", BigDecimal.valueOf(-10.00));
+
+        mockMvc.perform(post("/v1/customers")
+                        .contentType(APPLICATION_JSON)
+                        .content(requestBody(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors[0]").value("balance must be positive"))
+                .andDo(print());
+    }
+
+    @Test
+    void createFailsWithInvalidAccountFormat() throws Exception {
+        var request = new CustomerRequest("Test", "123-4", BigDecimal.ZERO);
+
+        mockMvc.perform(post("/v1/customers")
+                        .contentType(APPLICATION_JSON)
+                        .content(requestBody(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors[0]").value("account must be 5 digits, a hyphen, and 1 digit (7 total)"))
+                .andDo(print());
+    }
+
+    @Test
+    void createFailsWhenAccountAlreadyExists() throws Exception {
+        var request = new CustomerRequest("Pedro", "00001-1", BigDecimal.ZERO);
+
+        mockMvc.perform(post("/v1/customers")
+                        .contentType(APPLICATION_JSON)
+                        .content(requestBody(request)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.errors[0]").value("Account number already exists."))
+                .andDo(print());
+    }
+
+    @Test
+    void createFailsWhenNameIsMissing() throws Exception {
+        var request = new CustomerRequest("", "00009-9", BigDecimal.ZERO);
+
+        mockMvc.perform(post("/v1/customers")
+                        .contentType(APPLICATION_JSON)
+                        .content(requestBody(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors[0]").value("name is required"))
+                .andDo(print());
+    }
+
+    @Test
     void getTransfers() throws Exception {
         var account = "00001-1";
         mockMvc.perform(get("/v1/customers/" + account + "/transfers"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$.length()", greaterThan(0)))
+                .andExpect(jsonPath("$[0].amount").isNumber())
+                .andExpect(jsonPath("$[0].createdAt").isNotEmpty())
+                .andExpect(jsonPath("$[0].sourceAccount").value(account))
+                .andExpect(jsonPath("$[0].destinationAccount").isNotEmpty())
+                .andExpect(jsonPath("$[?(@.status == 'Completed')]").exists())
+                .andDo(print());
+    }
+
+    @Test
+    void getTransfersReturnsEmptyList() throws Exception {
+        mockMvc.perform(get("/v1/customers/00000-0/transfers"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0))
                 .andDo(print());
     }
 
@@ -93,12 +183,63 @@ class CustomerControllerTest {
 
         mockMvc.perform(post("/v1/customers/" + account + "/transfers")
                         .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(transferRequest)))
+                        .content(requestBody(transferRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.sourceAccount").value(account))
                 .andExpect(jsonPath("$.destinationAccount").value(destinationAccount))
                 .andExpect(jsonPath("$.amount").value(50.00))
                 .andExpect(jsonPath("$.status").value(TransferStatus.COMPLETED.toString()))
                 .andDo(print());
+    }
+
+    @Test
+    void transferFailsWhenAccountNotFound() throws Exception {
+        var account = "00001-1";
+        var nonExistentAccount = "00003-1";
+        var transferRequest = new TransferRequest(nonExistentAccount, BigDecimal.valueOf(50.00));
+
+        mockMvc.perform(post("/v1/customers/" + account + "/transfers")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(transferRequest)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.errors[0]").value("Account " + nonExistentAccount + " not found"))
+                .andDo(print());
+    }
+
+    @Test
+    void transferFailsWithInsufficientFunds() throws Exception {
+        var account = "00001-1";
+        var destinationAccount = "00002-2";
+        var transferRequest = new TransferRequest(destinationAccount, BigDecimal.valueOf(10000.00));
+
+        var initialBalance = customerRepository.findByAccount(account).get().getBalance();
+        assertEquals(new BigDecimal("100.00"), initialBalance);
+
+        mockMvc.perform(post("/v1/customers/" + account + "/transfers")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(transferRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors[0]").value("Insufficient funds for this operation."))
+                .andDo(print());
+
+        var finalBalance = customerRepository.findByAccount(account).get().getBalance();
+        assertEquals(new BigDecimal("100.00"), finalBalance);
+    }
+
+    @Test
+    void transferFailsWhenSourceIsSameAsDestination() throws Exception {
+        var account = "00001-1";
+        var transferRequest = new TransferRequest(account, BigDecimal.valueOf(10.00));
+
+        mockMvc.perform(post("/v1/customers/" + account + "/transfers")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(transferRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors[0]").value("Cannot transfer to the same account."))
+                .andDo(print());
+    }
+
+    private String requestBody(Object body) {
+        return objectMapper.writeValueAsString(body);
     }
 }
