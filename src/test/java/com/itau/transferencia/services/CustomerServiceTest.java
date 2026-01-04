@@ -52,7 +52,7 @@ class CustomerServiceTest {
         var customers = service.findAll();
 
         assertThat(customers.size()).isNotZero();
-        assertThat(customers.get(0).getName()).isEqualTo("Boss");
+        assertThat(customers.getFirst().getName()).isEqualTo("Boss");
         verify(repository).findAll();
     }
 
