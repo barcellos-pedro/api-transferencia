@@ -19,7 +19,7 @@ public class ControllerAdvice {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<Errors> handleBusinessException(BusinessException exception) {
-        return ErrorResponse.badRequest(exception);
+        return ErrorResponse.fromBusinessException(exception);
     }
 
     @ExceptionHandler(ObjectOptimisticLockingFailureException.class)

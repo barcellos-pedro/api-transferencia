@@ -17,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 @Service
 public class TransferServiceImpl implements TransferService {
     private static final Logger logger = LoggerFactory.getLogger(TransferServiceImpl.class);
@@ -46,11 +49,11 @@ public class TransferServiceImpl implements TransferService {
             destination = findAccount(transferRequest.destination());
 
             if (Customer.isSameAccount(source, destination)) {
-                throw new BusinessException("Cannot transfer to the same account.");
+                throw new BusinessException("Cannot transfer to the same account.", BAD_REQUEST);
             }
 
             if (!source.hasFundsToTransfer(transferRequest.amount())) {
-                throw new BusinessException("Insufficient funds for this operation.");
+                throw new BusinessException("Insufficient funds for this operation.", BAD_REQUEST);
             }
 
             source.setBalance(source.getBalance().subtract(amount));
@@ -59,8 +62,7 @@ public class TransferServiceImpl implements TransferService {
             return repository.save(Transfer.ofCompleted(source, destination, amount));
         } catch (ObjectOptimisticLockingFailureException | BusinessException exception) {
             logger.warn(exception.getMessage(), exception);
-            var transfer = Transfer.ofFailed(source, destination, transferRequest.amount());
-            transferLogService.save(transfer);
+            transferLogService.save(Transfer.ofFailed(source, destination, transferRequest.amount()));
             throw exception;
         }
     }
@@ -75,6 +77,6 @@ public class TransferServiceImpl implements TransferService {
 
     private Customer findAccount(String account) {
         return customerService.findByAccount(account)
-                .orElseThrow(() -> new BusinessException("Account " + account + " not found"));
+                .orElseThrow(() -> new BusinessException("Account " + account + " not found", NOT_FOUND));
     }
 }

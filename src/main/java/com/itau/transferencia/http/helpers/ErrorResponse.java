@@ -1,5 +1,6 @@
 package com.itau.transferencia.http.helpers;
 
+import com.itau.transferencia.exceptions.BusinessException;
 import com.itau.transferencia.http.responses.Errors;
 import org.springframework.http.ResponseEntity;
 
@@ -11,8 +12,10 @@ public class ErrorResponse {
     private ErrorResponse() {
     }
 
-    public static ResponseEntity<Errors> badRequest(RuntimeException exception) {
-        return ResponseEntity.badRequest().body(Errors.of(exception));
+    public static ResponseEntity<Errors> fromBusinessException(BusinessException exception) {
+        var status = exception.getHttpStatus();
+        var body = Errors.of(exception);
+        return ResponseEntity.status(status).body(body);
     }
 
     public static ResponseEntity<Errors> badRequest(String message) {
