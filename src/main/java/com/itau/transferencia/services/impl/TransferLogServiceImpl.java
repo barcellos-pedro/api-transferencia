@@ -4,7 +4,6 @@ import com.itau.transferencia.entities.Transfer;
 import com.itau.transferencia.repositories.TransferRepository;
 import com.itau.transferencia.services.TransferLogService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
