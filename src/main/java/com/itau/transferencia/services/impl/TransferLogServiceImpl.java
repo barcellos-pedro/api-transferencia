@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
+
 @Service
 public class TransferLogServiceImpl implements TransferLogService {
     private final TransferRepository repository;
@@ -15,7 +17,7 @@ public class TransferLogServiceImpl implements TransferLogService {
         this.repository = repository;
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = REQUIRES_NEW)
     public void save(Transfer transfer) {
         repository.save(transfer);
     }
