@@ -96,3 +96,14 @@ Execute os testes com:
 ```bash
 mvn test
 ```
+
+## Base do Projeto
+
+O projeto foi estruturado utilizando o [Spring Initializr](https://start.spring.io).
+
+**Stack Tecnológica e Dependências**
+
+Abaixo, os principais componentes selecionados para atender aos requisitos da API:
+
+<img width="1710" height="654" alt="image" src="https://github.com/user-attachments/assets/35a7e8da-9396-4ad3-944b-87a0fa95573a" />
+
