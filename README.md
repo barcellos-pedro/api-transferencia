@@ -1,10 +1,10 @@
-# 🏦 Transfer Service API
+# Transfer Service API
 
 Este projeto consiste em uma API RESTful para gerenciamento de clientes e realização de transferências financeiras,
 desenvolvida como parte do processo seletivo para Engenheiro de Software. A solução foca em **consistência de dados**, *
 *auditabilidade** e **escalabilidade**.
 
-## 🛠️ Tecnologias e Requisitos
+## Tecnologias e Requisitos
 
 * **Java 21** (LTS)
 * **Spring Boot 3**
@@ -13,7 +13,7 @@ desenvolvida como parte do processo seletivo para Engenheiro de Software. A solu
 * **SpringDoc OpenAPI (Swagger)** (Documentação)
 * **Bean Validation** (Validação de entradas)
 
-## 🚀 Como Executar a Aplicação
+## Como Executar a Aplicação
 
 1. **Pré-requisitos**: Certifique-se de ter o **JDK 21** e o **Maven** instalados.
 2. **Clone o repositório**:
@@ -33,7 +33,7 @@ mvn spring-boot:run
 5. **Documentação Interativa (Swagger)**: Acesse `http://localhost:8080/swagger-ui/index.html` para testar os endpoints
    no navegador
 
-## 📖 Endpoints Principais
+## Endpoints Principais
 
 A API segue o padrão RESTful e versionamento via URL (`/v1/...`):
 
@@ -45,9 +45,28 @@ A API segue o padrão RESTful e versionamento via URL (`/v1/...`):
 * `GET /v1/customers/{account}/transfers`: Histórico ordenado por data decrescente, incluindo falhas.
 * `POST /v1/customers/{account}/transfers`: Realiza transferência entre contas (Limite de R$ 10.000,00).
 
+## Endpoints adicionais
+
+* `GET /api-docs` - Especificação OpenAPI em JSON.
+* `GET /actuator/health`: Check da saúde da aplicação.
+* `GET /swagger-ui/index.html`: Interface visual para testar os endpoints da API.
+
+## Monitoramento e Documentação
+
+A API utiliza o Spring Boot Actuator para fornecer métricas e estados de saúde, essencial para ambientes de produção e
+observabilidade.
+
+**(Endpoints de Diagnóstico (Actuator)**
+
+| Endpoint              | Descrição          | Utilidade                                                |
+|-----------------------|--------------------|----------------------------------------------------------|
+| GET /actuator/health  | Saúde da Aplicação | Verifica se o App, DB e Disco estão operacionais.        |
+| GET /actuator/metrics | Métricas           | Lista métricas disponíveis (JVM, CPU, Requisições HTTP). |
+| GET /actuator/info    | Informações        | Dados personalizados sobre a versão e build do projeto.  |
+
 ## Decisões de Engenharia & Arquitetura
 
-### 1. Resiliência no Histórico (Auditoria)
+### 1. Resiliência no Histórico
 
 Conforme solicitado, transferências sem sucesso também são armazenadas. Para garantir que o registro de falha seja
 persistido mesmo quando a transação financeira sofrer rollback, utilizei a propagação **`REQUIRES_NEW`** no serviço de
@@ -65,7 +84,7 @@ Para atender ao requisito de controle de concorrência na operação de transfer
 As regras de saldo suficiente e limite máximo de R$ 10.000,00 por operação foram centralizadas na camada de serviço,
 garantindo que o estado do banco de dados permaneça consistente.
 
-## 🧪 Testes
+## Testes
 
 A cobertura de testes foi priorizada para garantir a confiabilidade das transferências:
 
