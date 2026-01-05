@@ -1,10 +1,10 @@
 package com.itau.transferencia.controllers;
 
-import com.itau.transferencia.entities.TransferStatus;
-import com.itau.transferencia.http.requests.CustomerRequest;
-import com.itau.transferencia.http.requests.TransferRequest;
+import com.itau.transferencia.enums.TransferStatus;
 import com.itau.transferencia.repositories.CustomerRepository;
 import com.itau.transferencia.repositories.TransferRepository;
+import com.itau.transferencia.requests.CustomerRequest;
+import com.itau.transferencia.requests.TransferRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,8 +16,7 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
 
-import static com.itau.transferencia.helpers.ErrorMessages.UNIQUE_ACCOUNT;
-import static com.itau.transferencia.helpers.ErrorMessages.ACCOUNT_NOT_FOUND;
+import static com.itau.transferencia.helpers.ErrorMessages.*;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -115,7 +114,7 @@ class CustomerControllerTest {
                         .contentType(APPLICATION_JSON)
                         .content(requestBody(request)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors[0]").value("balance must be positive"))
+                .andExpect(jsonPath("$.errors[0]").value("Balance must be positive"))
                 .andDo(print());
     }
 
@@ -127,7 +126,7 @@ class CustomerControllerTest {
                         .contentType(APPLICATION_JSON)
                         .content(requestBody(request)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors[0]").value("account must be 5 digits, a hyphen, and 1 digit (7 total)"))
+                .andExpect(jsonPath("$.errors[0]").value(ACCOUNT_NUMBER))
                 .andDo(print());
     }
 
@@ -151,7 +150,7 @@ class CustomerControllerTest {
                         .contentType(APPLICATION_JSON)
                         .content(requestBody(request)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors[0]").value("name is required"))
+                .andExpect(jsonPath("$.errors[0]").value("Name is required"))
                 .andDo(print());
     }
 
@@ -221,7 +220,7 @@ class CustomerControllerTest {
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(transferRequest)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors[0]").value("Insufficient funds for this operation."))
+                .andExpect(jsonPath("$.errors[0]").value(INSUFFICIENT_FUNDS))
                 .andDo(print());
 
         var finalBalance = customerRepository.findByAccount(account).get().getBalance();
@@ -237,7 +236,7 @@ class CustomerControllerTest {
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(transferRequest)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errors[0]").value("Cannot transfer to the same account."))
+                .andExpect(jsonPath("$.errors[0]").value(SAME_ACCOUNT))
                 .andDo(print());
     }
 
