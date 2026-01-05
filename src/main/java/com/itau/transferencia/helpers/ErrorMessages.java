@@ -1,9 +1,10 @@
 package com.itau.transferencia.helpers;
 
 public class ErrorMessages {
-    public static final String ACCOUNT_NOT_FOUND = "Account %s not found.";
-    public static final String UNIQUE_ACCOUNT = "Account number already exists.";
-    public static final String SAME_ACCOUNT = "Cannot transfer to the same account.";
-    public static final String INSUFFICIENT_FUNDS = "Insufficient funds for this operation.";
-    public static final String OPTIMISTIC_LOCK = "The account was updated by another process. Please try again.";
+    public static final String ACCOUNT_NOT_FOUND = "Conta %s não encontrada.";
+    public static final String UNIQUE_ACCOUNT = "Número da conta já existe.";
+    public static final String SAME_ACCOUNT = "Não é possível transferir para mesma conta.";
+    public static final String INSUFFICIENT_FUNDS = "Saldo insuficiente para esta operação.";
+    public static final String ACCOUNT_NUMBER = "Account must be 5 digits, a hyphen, and 1 digit (7 total)";
+    public static final String OPTIMISTIC_LOCK = "Conta atualizada por outro processo. Por favor, tente novamente.";
 }
