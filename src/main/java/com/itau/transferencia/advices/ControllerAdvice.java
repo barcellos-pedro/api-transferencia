@@ -1,7 +1,8 @@
 package com.itau.transferencia.advices;
 
 import com.itau.transferencia.exceptions.BusinessException;
-import com.itau.transferencia.http.responses.Errors;
+import com.itau.transferencia.responses.Errors;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -51,7 +52,7 @@ public class ControllerAdvice {
         return ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(error -> error.getField() + " " + error.getDefaultMessage())
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .toList();
     }
 }
