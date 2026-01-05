@@ -1,4 +1,4 @@
-package com.itau.transferencia.http.requests;
+package com.itau.transferencia.requests;
 
 import com.itau.transferencia.validations.AccountNumber;
 import jakarta.validation.constraints.Max;
