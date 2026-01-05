@@ -2,6 +2,7 @@ package com.itau.transferencia.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.itau.transferencia.enums.TransferStatus;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
