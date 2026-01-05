@@ -1,8 +1,6 @@
-# Transfer Service API
+# API Transferências Financeiras
 
-Este projeto consiste em uma API RESTful para gerenciamento de clientes e realização de transferências financeiras,
-desenvolvida como parte do processo seletivo para Engenheiro de Software. A solução foca em **consistência de dados**, *
-*auditabilidade** e **escalabilidade**.
+Este projeto consiste em uma API RESTful para gerenciamento de clientes e realização de transferências financeiras.
 
 ## Tecnologias e Requisitos
 
