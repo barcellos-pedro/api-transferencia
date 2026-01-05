@@ -4,12 +4,10 @@ Este projeto consiste em uma API RESTful para gerenciamento de clientes e realiz
 
 ## Tecnologias e Requisitos
 
-* **Java 21** (LTS)
-* **Spring Boot 3**
-* **Spring Data JPA** com Banco de Dados **H2** (In-memory)
-* **Maven** (Gerenciador de dependências)
-* **SpringDoc OpenAPI (Swagger)** (Documentação)
-* **Bean Validation** (Validação de entradas)
+* **Java 25**
+* **Spring Boot 4**
+* **H2**
+* **Maven**
 
 ## Como Executar a Aplicação
 
