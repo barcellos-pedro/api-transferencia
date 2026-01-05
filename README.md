@@ -2,6 +2,8 @@
 
 Este projeto consiste em uma API RESTful para gerenciamento de clientes e realização de transferências financeiras.
 
+O princípio [KISS](https://en.wikipedia.org/wiki/KISS_principle) (*Keep It Simple, Stupid!*) foi adotado para manter simplicidade, clareza e facilitar a manutenção do projeto.
+
 ## Tecnologias e Requisitos
 
 * **Java 25**
@@ -21,8 +23,15 @@ cd api-transferencia
 
 3. **Compile e execute**:
 
+Para rodar com o perfil padrão
+
 ```bash
 mvn spring-boot:run
+```
+
+Para rodar com o perfil **dev** que já possui alguns registros no banco de dados
+```bash
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
 4. **Acesse a API**: A aplicação estará disponível em `http://localhost:8080`.
@@ -64,7 +73,7 @@ observabilidade.
 
 ### 1. Resiliência no Histórico
 
-Conforme solicitado, transferências sem sucesso também são armazenadas. Para garantir que o registro de falha seja
+Transferências sem sucesso também são armazenadas. Para garantir que o registro de falha seja
 persistido mesmo quando a transação financeira sofrer rollback, utilizei a propagação **`REQUIRES_NEW`** no serviço de
 auditoria. Isso garante a integridade do histórico para conformidade bancária.
 
@@ -102,4 +111,8 @@ O projeto foi estruturado utilizando o [Spring Initializr](https://start.spring.
 Abaixo, os principais componentes selecionados para atender aos requisitos da API:
 
 <img width="1710" height="654" alt="image" src="https://github.com/user-attachments/assets/35a7e8da-9396-4ad3-944b-87a0fa95573a" />
+
+## Requisitos
+
+Confira mais detalhes sobre os [requisitos](./docs/REQUISITOS.md) em `docs/REQUISITOS.md`
 
