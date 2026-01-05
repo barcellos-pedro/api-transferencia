@@ -1,7 +1,7 @@
 package com.itau.transferencia.controllers;
 
 import com.itau.transferencia.entities.Customer;
-import com.itau.transferencia.http.helpers.HttpHelper;
+import com.itau.transferencia.helpers.HttpHelper;
 import com.itau.transferencia.http.requests.CustomerRequest;
 import com.itau.transferencia.http.requests.TransferRequest;
 import com.itau.transferencia.http.responses.TransferResponse;
