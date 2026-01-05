@@ -1,7 +1,7 @@
 package com.itau.transferencia.services.impl;
 
 import com.itau.transferencia.entities.Customer;
-import com.itau.transferencia.http.requests.CustomerRequest;
+import com.itau.transferencia.requests.CustomerRequest;
 import com.itau.transferencia.repositories.CustomerRepository;
 import com.itau.transferencia.services.CustomerService;
 import org.springframework.stereotype.Service;
