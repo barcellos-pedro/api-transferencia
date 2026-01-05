@@ -10,8 +10,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import static com.itau.transferencia.advices.ControllerAdviceHelper.getErrorsMessage;
-import static com.itau.transferencia.exceptions.ErrorMessages.*;
+import java.util.List;
+
+import static com.itau.transferencia.helpers.ErrorMessages.OPTIMISTIC_LOCK;
+import static com.itau.transferencia.helpers.ErrorMessages.UNIQUE_ACCOUNT;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 
 @RestControllerAdvice
@@ -20,7 +23,7 @@ public class ControllerAdvice {
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<Errors> handleBusinessException(BusinessException exception) {
         return ResponseEntity.status(exception.getHttpStatus())
-                .body(Errors.of(exception));
+                .body(Errors.of(exception.getMessage()));
     }
 
     @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
@@ -30,7 +33,7 @@ public class ControllerAdvice {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Errors> handleDataIntegrityException(DataIntegrityViolationException exception) {
-        return ResponseEntity.status(CONFLICT).body(Errors.of(ACCOUNT_EXISTS));
+        return ResponseEntity.status(CONFLICT).body(Errors.of(UNIQUE_ACCOUNT));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -41,6 +44,14 @@ public class ControllerAdvice {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Errors> handleRequestBodyException(HttpMessageNotReadableException exception) {
-        return ResponseEntity.badRequest().body(Errors.of(BAD_JSON));
+        return ResponseEntity.badRequest().body(Errors.of(BAD_REQUEST.getReasonPhrase()));
+    }
+
+    public static List<String> getErrorsMessage(MethodArgumentNotValidException ex) {
+        return ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> error.getField() + " " + error.getDefaultMessage())
+                .toList();
     }
 }
