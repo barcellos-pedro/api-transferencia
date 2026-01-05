@@ -2,9 +2,9 @@ package com.itau.transferencia.controllers;
 
 import com.itau.transferencia.entities.Customer;
 import com.itau.transferencia.helpers.HttpHelper;
-import com.itau.transferencia.http.requests.CustomerRequest;
-import com.itau.transferencia.http.requests.TransferRequest;
-import com.itau.transferencia.http.responses.TransferResponse;
+import com.itau.transferencia.requests.CustomerRequest;
+import com.itau.transferencia.requests.TransferRequest;
+import com.itau.transferencia.responses.TransferResponse;
 import com.itau.transferencia.services.CustomerService;
 import com.itau.transferencia.services.TransferService;
 import jakarta.validation.Valid;
