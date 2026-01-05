@@ -1,4 +1,4 @@
-package com.itau.transferencia.http.responses;
+package com.itau.transferencia.responses;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.itau.transferencia.entities.Customer;
