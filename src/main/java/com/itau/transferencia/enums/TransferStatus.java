@@ -1,4 +1,4 @@
-package com.itau.transferencia.entities;
+package com.itau.transferencia.enums;
 
 public enum TransferStatus {
     COMPLETED("Completed"),
