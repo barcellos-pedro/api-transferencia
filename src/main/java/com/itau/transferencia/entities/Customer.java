@@ -62,8 +62,12 @@ public class Customer {
         return customer.getAccount().equals(other.getAccount());
     }
 
-    public boolean hasFundsToTransfer(BigDecimal amount) {
+    public boolean canTransfer(BigDecimal amount) {
         return this.getBalance().compareTo(amount) >= 0;
+    }
+
+    public boolean cannotTransfer(BigDecimal amount) {
+        return !this.canTransfer(amount);
     }
 
     public Long getId() {
