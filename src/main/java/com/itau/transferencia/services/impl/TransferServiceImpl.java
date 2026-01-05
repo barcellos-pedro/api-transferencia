@@ -2,7 +2,10 @@ package com.itau.transferencia.services.impl;
 
 import com.itau.transferencia.entities.Customer;
 import com.itau.transferencia.entities.Transfer;
+import com.itau.transferencia.exceptions.AccountNotFoundException;
 import com.itau.transferencia.exceptions.BusinessException;
+import com.itau.transferencia.exceptions.InsufficientFundsException;
+import com.itau.transferencia.exceptions.SameAccountException;
 import com.itau.transferencia.http.requests.TransferRequest;
 import com.itau.transferencia.http.responses.TransferResponse;
 import com.itau.transferencia.repositories.TransferRepository;
@@ -16,10 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
-import static com.itau.transferencia.exceptions.ErrorMessages.*;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
 public class TransferServiceImpl implements TransferService {
@@ -50,11 +49,11 @@ public class TransferServiceImpl implements TransferService {
             destination = findAccount(transferRequest.destination());
 
             if (Customer.isSameAccount(source, destination)) {
-                throw new BusinessException(SAME_ACCOUNT, BAD_REQUEST);
+                throw new SameAccountException();
             }
 
             if (source.cannotTransfer(transferRequest.amount())) {
-                throw new BusinessException(INSUFFICIENT_FUNDS, BAD_REQUEST);
+                throw new InsufficientFundsException();
             }
 
             source.setBalance(source.getBalance().subtract(amount));
@@ -78,6 +77,6 @@ public class TransferServiceImpl implements TransferService {
 
     private Customer findAccount(String account) {
         return customerService.findByAccount(account)
-                .orElseThrow(() -> new BusinessException(ACCOUNT_NOT_FOUND.formatted(account), NOT_FOUND));
+                .orElseThrow(() -> new AccountNotFoundException(account));
     }
 }
