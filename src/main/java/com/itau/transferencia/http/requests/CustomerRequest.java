@@ -16,4 +16,7 @@ public record CustomerRequest(
         @Min(value = 0, message = "must be positive")
         BigDecimal balance
 ) {
+    public CustomerRequest {
+        balance = balance == null ? BigDecimal.ZERO : balance;
+    }
 }
