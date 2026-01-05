@@ -6,9 +6,9 @@ import com.itau.transferencia.exceptions.AccountNotFoundException;
 import com.itau.transferencia.exceptions.BusinessException;
 import com.itau.transferencia.exceptions.InsufficientFundsException;
 import com.itau.transferencia.exceptions.SameAccountException;
-import com.itau.transferencia.http.requests.TransferRequest;
-import com.itau.transferencia.http.responses.TransferResponse;
 import com.itau.transferencia.repositories.TransferRepository;
+import com.itau.transferencia.requests.TransferRequest;
+import com.itau.transferencia.responses.TransferResponse;
 import com.itau.transferencia.services.CustomerService;
 import com.itau.transferencia.services.TransferLogService;
 import com.itau.transferencia.services.TransferService;
@@ -60,9 +60,15 @@ public class TransferServiceImpl implements TransferService {
             destination.setBalance(destination.getBalance().add(amount));
 
             return repository.save(Transfer.ofCompleted(source, destination, amount));
-        } catch (ObjectOptimisticLockingFailureException | BusinessException exception) {
-            logger.warn(exception.getMessage(), exception);
-            transferLogService.save(Transfer.ofFailed(source, destination, transferRequest.amount()));
+        } catch (BusinessException exception) {
+            var failedTransfer = Transfer.ofFailed(source, destination, transferRequest.amount());
+            logger.warn(failedTransfer.toString(), exception);
+            transferLogService.save(failedTransfer);
+            throw exception;
+        } catch (ObjectOptimisticLockingFailureException exception) {
+            var transfer = Transfer.ofFailed(source, destination, transferRequest.amount());
+            logger.error(transfer.toString(), exception);
+            transferLogService.save(transfer);
             throw exception;
         }
     }
