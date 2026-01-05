@@ -16,8 +16,8 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
 
-import static com.itau.transferencia.exceptions.ErrorMessages.ACCOUNT_EXISTS;
-import static com.itau.transferencia.exceptions.ErrorMessages.ACCOUNT_NOT_FOUND;
+import static com.itau.transferencia.helpers.ErrorMessages.UNIQUE_ACCOUNT;
+import static com.itau.transferencia.helpers.ErrorMessages.ACCOUNT_NOT_FOUND;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -139,7 +139,7 @@ class CustomerControllerTest {
                         .contentType(APPLICATION_JSON)
                         .content(requestBody(request)))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.errors[0]").value(ACCOUNT_EXISTS))
+                .andExpect(jsonPath("$.errors[0]").value(UNIQUE_ACCOUNT))
                 .andDo(print());
     }
 
