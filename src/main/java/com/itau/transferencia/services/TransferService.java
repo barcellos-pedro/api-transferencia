@@ -1,8 +1,8 @@
 package com.itau.transferencia.services;
 
 import com.itau.transferencia.entities.Transfer;
-import com.itau.transferencia.http.requests.TransferRequest;
-import com.itau.transferencia.http.responses.TransferResponse;
+import com.itau.transferencia.requests.TransferRequest;
+import com.itau.transferencia.responses.TransferResponse;
 
 import java.util.List;
 

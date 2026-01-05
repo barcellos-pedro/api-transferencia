@@ -1,7 +1,7 @@
 package com.itau.transferencia.services;
 
 import com.itau.transferencia.entities.Customer;
-import com.itau.transferencia.http.requests.CustomerRequest;
+import com.itau.transferencia.requests.CustomerRequest;
 
 import java.util.List;
 import java.util.Optional;
