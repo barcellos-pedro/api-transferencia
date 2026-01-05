@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import static com.itau.transferencia.exceptions.ErrorMessages.ACCOUNT_NOT_FOUND;
+import static com.itau.transferencia.helpers.ErrorMessages.ACCOUNT_NOT_FOUND;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
