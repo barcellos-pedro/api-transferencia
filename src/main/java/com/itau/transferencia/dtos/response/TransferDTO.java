@@ -1,4 +1,4 @@
-package com.itau.transferencia.responses;
+package com.itau.transferencia.dtos.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.itau.transferencia.entities.Customer;
@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public record TransferResponse(
+public record TransferDTO(
         Long id,
         String sourceAccount,
         String destinationAccount,
@@ -18,14 +18,14 @@ public record TransferResponse(
         LocalDateTime createdAt,
         TransferStatus status
 ) {
-    public static TransferResponse fromEntity(Transfer transfer) {
+    public static TransferDTO fromEntity(Transfer transfer) {
         var destination = getAccount(transfer.getDestination());
         var source = getAccount(transfer.getSource());
         var createdAt = transfer.getCreatedAt();
         var amount = transfer.getAmount();
         var status = transfer.getStatus();
         var id = transfer.getId();
-        return new TransferResponse(id, source, destination, amount, createdAt, status);
+        return new TransferDTO(id, source, destination, amount, createdAt, status);
     }
 
     private static String getAccount(Customer customer) {

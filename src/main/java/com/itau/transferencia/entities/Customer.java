@@ -1,7 +1,7 @@
 package com.itau.transferencia.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.itau.transferencia.dtos.CustomerDTO;
+import com.itau.transferencia.dtos.request.CustomerDTO;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;

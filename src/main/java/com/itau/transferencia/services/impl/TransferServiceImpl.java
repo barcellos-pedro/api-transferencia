@@ -7,8 +7,7 @@ import com.itau.transferencia.exceptions.BusinessException;
 import com.itau.transferencia.exceptions.InsufficientFundsException;
 import com.itau.transferencia.exceptions.SameAccountException;
 import com.itau.transferencia.repositories.TransferRepository;
-import com.itau.transferencia.dtos.TransferDTO;
-import com.itau.transferencia.responses.TransferResponse;
+import com.itau.transferencia.dtos.response.TransferDTO;
 import com.itau.transferencia.services.CustomerService;
 import com.itau.transferencia.services.TransferLogService;
 import com.itau.transferencia.services.TransferService;
@@ -39,7 +38,7 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     @Transactional
-    public Transfer transfer(String sourceAccount, TransferDTO transferDTO) {
+    public Transfer transfer(String sourceAccount, com.itau.transferencia.dtos.request.TransferDTO transferDTO) {
         Customer source = null;
         Customer destination = null;
 
@@ -74,10 +73,10 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public List<TransferResponse> getTransfers(String account) {
+    public List<TransferDTO> getTransfers(String account) {
         return repository.getTransfers(account)
                 .stream()
-                .map(TransferResponse::fromEntity)
+                .map(TransferDTO::fromEntity)
                 .toList();
     }
 

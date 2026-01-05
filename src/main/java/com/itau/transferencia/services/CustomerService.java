@@ -1,7 +1,7 @@
 package com.itau.transferencia.services;
 
 import com.itau.transferencia.entities.Customer;
-import com.itau.transferencia.dtos.CustomerDTO;
+import com.itau.transferencia.dtos.request.CustomerDTO;
 
 import java.util.List;
 import java.util.Optional;

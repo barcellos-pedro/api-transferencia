@@ -2,7 +2,7 @@ package com.itau.transferencia.services;
 
 import com.itau.transferencia.entities.Customer;
 import com.itau.transferencia.repositories.CustomerRepository;
-import com.itau.transferencia.dtos.CustomerDTO;
+import com.itau.transferencia.dtos.request.CustomerDTO;
 import com.itau.transferencia.services.impl.CustomerServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

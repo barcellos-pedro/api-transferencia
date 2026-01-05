@@ -1,7 +1,7 @@
 package com.itau.transferencia.advices;
 
 import com.itau.transferencia.exceptions.BusinessException;
-import com.itau.transferencia.responses.Errors;
+import com.itau.transferencia.dtos.response.ErrorDTO;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -22,30 +22,30 @@ import static org.springframework.http.HttpStatus.CONFLICT;
 public class ControllerAdvice {
 
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<Errors> handleBusinessException(BusinessException exception) {
+    public ResponseEntity<ErrorDTO> handleBusinessException(BusinessException exception) {
         return ResponseEntity.status(exception.getHttpStatus())
-                .body(Errors.of(exception.getMessage()));
+                .body(ErrorDTO.of(exception.getMessage()));
     }
 
     @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
-    public ResponseEntity<Errors> handleOptimisticLockingException(ObjectOptimisticLockingFailureException exception) {
-        return ResponseEntity.badRequest().body(Errors.of(OPTIMISTIC_LOCK));
+    public ResponseEntity<ErrorDTO> handleOptimisticLockingException(ObjectOptimisticLockingFailureException exception) {
+        return ResponseEntity.badRequest().body(ErrorDTO.of(OPTIMISTIC_LOCK));
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<Errors> handleDataIntegrityException(DataIntegrityViolationException exception) {
-        return ResponseEntity.status(CONFLICT).body(Errors.of(UNIQUE_ACCOUNT));
+    public ResponseEntity<ErrorDTO> handleDataIntegrityException(DataIntegrityViolationException exception) {
+        return ResponseEntity.status(CONFLICT).body(ErrorDTO.of(UNIQUE_ACCOUNT));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Errors> handleValidationException(MethodArgumentNotValidException exception) {
+    public ResponseEntity<ErrorDTO> handleValidationException(MethodArgumentNotValidException exception) {
         var errors = getErrorsMessage(exception);
-        return ResponseEntity.badRequest().body(Errors.of(errors));
+        return ResponseEntity.badRequest().body(ErrorDTO.of(errors));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<Errors> handleRequestBodyException(HttpMessageNotReadableException exception) {
-        return ResponseEntity.badRequest().body(Errors.of(BAD_REQUEST.getReasonPhrase()));
+    public ResponseEntity<ErrorDTO> handleRequestBodyException(HttpMessageNotReadableException exception) {
+        return ResponseEntity.badRequest().body(ErrorDTO.of(BAD_REQUEST.getReasonPhrase()));
     }
 
     public static List<String> getErrorsMessage(MethodArgumentNotValidException ex) {

@@ -1,4 +1,4 @@
-package com.itau.transferencia.dtos;
+package com.itau.transferencia.dtos.request;
 
 import com.itau.transferencia.validations.AccountNumber;
 import jakarta.validation.constraints.Max;

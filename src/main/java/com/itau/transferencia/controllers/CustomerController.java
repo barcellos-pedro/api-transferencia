@@ -1,18 +1,19 @@
 package com.itau.transferencia.controllers;
 
+import com.itau.transferencia.dtos.request.CustomerDTO;
+import com.itau.transferencia.dtos.response.TransferDTO;
 import com.itau.transferencia.entities.Customer;
-import com.itau.transferencia.helpers.HttpHelper;
-import com.itau.transferencia.dtos.CustomerDTO;
-import com.itau.transferencia.dtos.TransferDTO;
-import com.itau.transferencia.responses.TransferResponse;
 import com.itau.transferencia.services.CustomerService;
 import com.itau.transferencia.services.TransferService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -43,7 +44,7 @@ public class CustomerController {
     @PostMapping
     public ResponseEntity<Customer> create(@Valid @RequestBody CustomerDTO request) {
         var newCustomer = customerService.create(request);
-        var location = HttpHelper.getLocation(newCustomer.getId());
+        var location = getLocation(newCustomer.getId());
         return ResponseEntity.created(location).body(newCustomer);
     }
 
@@ -54,12 +55,19 @@ public class CustomerController {
     }
 
     @PostMapping("/{account}/transfers")
-    public ResponseEntity<TransferResponse> transfer(
+    public ResponseEntity<TransferDTO> transfer(
             @PathVariable String account,
-            @Valid @RequestBody TransferDTO transferDTO
+            @Valid @RequestBody com.itau.transferencia.dtos.request.TransferDTO transferDTO
     ) {
         var transfer = transferService.transfer(account, transferDTO);
-        var response = TransferResponse.fromEntity(transfer);
+        var response = TransferDTO.fromEntity(transfer);
         return ResponseEntity.status(CREATED).body(response);
+    }
+
+    public static URI getLocation(Long id) {
+        return ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(Map.of("id", id))
+                .toUri();
     }
 }
