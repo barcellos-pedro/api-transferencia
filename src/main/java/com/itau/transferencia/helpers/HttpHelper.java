@@ -1,4 +1,4 @@
-package com.itau.transferencia.http.helpers;
+package com.itau.transferencia.helpers;
 
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
