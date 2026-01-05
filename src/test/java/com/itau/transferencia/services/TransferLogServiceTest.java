@@ -26,8 +26,8 @@ class TransferLogServiceTest {
 
     @Test
     void save() {
-        var source = new Customer("Bob", "00005-5");
-        var destination = new Customer("Ross", "00006-6", BigDecimal.valueOf(50));
+        var source = new Customer("Ana", "00005-5");
+        var destination = new Customer("Thais", "00006-6", BigDecimal.valueOf(50));
         var transfer = Transfer.ofCompleted(source, destination, BigDecimal.valueOf(50));
 
         service.save(transfer);

@@ -2,13 +2,13 @@ package com.itau.transferencia.services;
 
 import com.itau.transferencia.entities.Customer;
 import com.itau.transferencia.entities.Transfer;
-import com.itau.transferencia.entities.TransferStatus;
+import com.itau.transferencia.enums.TransferStatus;
 import com.itau.transferencia.exceptions.AccountNotFoundException;
 import com.itau.transferencia.exceptions.InsufficientFundsException;
 import com.itau.transferencia.exceptions.SameAccountException;
-import com.itau.transferencia.http.requests.TransferRequest;
-import com.itau.transferencia.http.responses.TransferResponse;
 import com.itau.transferencia.repositories.TransferRepository;
+import com.itau.transferencia.requests.TransferRequest;
+import com.itau.transferencia.responses.TransferResponse;
 import com.itau.transferencia.services.impl.TransferServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import static com.itau.transferencia.helpers.ErrorMessages.ACCOUNT_NOT_FOUND;
+import static com.itau.transferencia.helpers.ErrorMessages.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,8 +49,8 @@ class TransferServiceTest {
         var sourceAccount = "00005-5";
         var destinationAccount = "00006-6";
 
-        var sourceCustomer = new Customer("Bob", sourceAccount, BigDecimal.valueOf(100));
-        var destinationCustomer = new Customer("Ross", destinationAccount);
+        var sourceCustomer = new Customer("Robson", sourceAccount, BigDecimal.valueOf(100));
+        var destinationCustomer = new Customer("Bruno", destinationAccount);
 
         var amount = BigDecimal.valueOf(50);
         var transferRequest = new TransferRequest(destinationAccount, amount);
@@ -75,14 +75,14 @@ class TransferServiceTest {
     @Test
     void transferFailsWhenSameAccount() {
         var account = "00005-5";
-        var customer = new Customer("Bob", account, BigDecimal.valueOf(100));
+        var customer = new Customer("Robson", account, BigDecimal.valueOf(100));
         var transferRequest = new TransferRequest(account, BigDecimal.valueOf(50));
         var failedTransfer = Transfer.ofFailed(customer, customer, transferRequest.amount());
 
         when(customerService.findByAccount(account)).thenReturn(Optional.of(customer));
 
         var exception = assertThrows(SameAccountException.class, () -> service.transfer(account, transferRequest));
-        assertThat(exception.getMessage()).isEqualTo("Cannot transfer to the same account.");
+        assertThat(exception.getMessage()).isEqualTo(SAME_ACCOUNT);
         assertThat(exception.getHttpStatus()).isEqualTo(BAD_REQUEST);
         verify(transferLogService).save(failedTransfer);
     }
@@ -108,8 +108,8 @@ class TransferServiceTest {
         var sourceAccount = "00005-5";
         var destinationAccount = "00006-6";
 
-        var sourceCustomer = new Customer("Bob", sourceAccount);
-        var destinationCustomer = new Customer("Ross", destinationAccount);
+        var sourceCustomer = new Customer("Robson", sourceAccount);
+        var destinationCustomer = new Customer("Bruno", destinationAccount);
 
         var amount = BigDecimal.valueOf(50);
         var transferRequest = new TransferRequest(destinationAccount, amount);
@@ -120,15 +120,15 @@ class TransferServiceTest {
 
         var exception = assertThrows(InsufficientFundsException.class, () -> service.transfer(sourceAccount, transferRequest));
 
-        assertThat(exception.getMessage()).isEqualTo("Insufficient funds for this operation.");
+        assertThat(exception.getMessage()).isEqualTo(INSUFFICIENT_FUNDS);
         assertThat(exception.getHttpStatus()).isEqualTo(BAD_REQUEST);
         verify(transferLogService).save(failedTransfer);
     }
 
     @Test
     void getTransfers() {
-        var source = new Customer("Bob", "00005-5", BigDecimal.valueOf(100));
-        var destination = new Customer("Ross", "00006-6");
+        var source = new Customer("Robson", "00005-5", BigDecimal.valueOf(100));
+        var destination = new Customer("Bruno", "00006-6");
 
         var completedTransfer = Transfer.ofCompleted(source, destination, BigDecimal.valueOf(50));
         var failedTransfer = Transfer.ofFailed(source, destination, BigDecimal.valueOf(70));

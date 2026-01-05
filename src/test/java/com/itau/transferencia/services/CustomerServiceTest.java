@@ -1,8 +1,8 @@
 package com.itau.transferencia.services;
 
 import com.itau.transferencia.entities.Customer;
-import com.itau.transferencia.http.requests.CustomerRequest;
 import com.itau.transferencia.repositories.CustomerRepository;
+import com.itau.transferencia.requests.CustomerRequest;
 import com.itau.transferencia.services.impl.CustomerServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,33 +33,33 @@ class CustomerServiceTest {
 
     @Test
     void create() {
-        var customerRequest = new CustomerRequest("Jhon", "00000-1", BigDecimal.valueOf(100));
+        var customerRequest = new CustomerRequest("Breno", "00000-1", BigDecimal.valueOf(100));
         service.create(customerRequest);
 
         verify(repository).save(customerCaptor.capture());
         var newCustomer = customerCaptor.getValue();
 
-        assertThat(newCustomer.getName()).isEqualTo("Jhon");
+        assertThat(newCustomer.getName()).isEqualTo("Breno");
         assertThat(newCustomer.getAccount()).isEqualTo("00000-1");
         assertThat(newCustomer.getBalance()).isEqualByComparingTo("100");
     }
 
     @Test
     void findAll() {
-        var customer = new Customer("Boss", "00009-9");
+        var customer = new Customer("Wesley", "00009-9");
         when(repository.findAll()).thenReturn(List.of(customer));
 
         var customers = service.findAll();
 
         assertThat(customers.size()).isNotZero();
-        assertThat(customers.getFirst().getName()).isEqualTo("Boss");
+        assertThat(customers.getFirst().getName()).isEqualTo("Wesley");
         verify(repository).findAll();
     }
 
     @Test
     void findByAccount() {
         var account = "00009-9";
-        var customer = new Customer("Harry", account);
+        var customer = new Customer("Wesley", account);
         when(repository.findByAccount(anyString())).thenReturn(Optional.of(customer));
 
         var result = service.findByAccount(account);
