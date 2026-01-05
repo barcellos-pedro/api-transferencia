@@ -10,6 +10,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import static com.itau.transferencia.helpers.ErrorMessages.ACCOUNT_NUMBER;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -21,7 +22,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 @ReportAsSingleViolation
 public @interface AccountNumber {
-    String message() default "must be 5 digits, a hyphen, and 1 digit (7 total)";
+    String message() default ACCOUNT_NUMBER;
 
     Class<?>[] groups() default {};
 
