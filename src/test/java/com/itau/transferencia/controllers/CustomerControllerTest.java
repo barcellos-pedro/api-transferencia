@@ -16,6 +16,8 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
 
+import static com.itau.transferencia.exceptions.ErrorMessages.ACCOUNT_EXISTS;
+import static com.itau.transferencia.exceptions.ErrorMessages.ACCOUNT_NOT_FOUND;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -137,7 +139,7 @@ class CustomerControllerTest {
                         .contentType(APPLICATION_JSON)
                         .content(requestBody(request)))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.errors[0]").value("Account number already exists."))
+                .andExpect(jsonPath("$.errors[0]").value(ACCOUNT_EXISTS))
                 .andDo(print());
     }
 
@@ -195,14 +197,14 @@ class CustomerControllerTest {
     @Test
     void transferFailsWhenAccountNotFound() throws Exception {
         var account = "00001-1";
-        var nonExistentAccount = "00003-1";
-        var transferRequest = new TransferRequest(nonExistentAccount, BigDecimal.valueOf(50.00));
+        var unknownAccount = "00003-1";
+        var transferRequest = new TransferRequest(unknownAccount, BigDecimal.valueOf(50.00));
 
         mockMvc.perform(post("/v1/customers/" + account + "/transfers")
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(transferRequest)))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.errors[0]").value("Account " + nonExistentAccount + " not found"))
+                .andExpect(jsonPath("$.errors[0]").value(ACCOUNT_NOT_FOUND.formatted(unknownAccount)))
                 .andDo(print());
     }
 

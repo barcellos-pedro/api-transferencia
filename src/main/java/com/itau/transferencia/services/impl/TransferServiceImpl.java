@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.itau.transferencia.exceptions.ErrorMessages.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -49,11 +50,11 @@ public class TransferServiceImpl implements TransferService {
             destination = findAccount(transferRequest.destination());
 
             if (Customer.isSameAccount(source, destination)) {
-                throw new BusinessException("Cannot transfer to the same account.", BAD_REQUEST);
+                throw new BusinessException(SAME_ACCOUNT, BAD_REQUEST);
             }
 
-            if (!source.hasFundsToTransfer(transferRequest.amount())) {
-                throw new BusinessException("Insufficient funds for this operation.", BAD_REQUEST);
+            if (source.cannotTransfer(transferRequest.amount())) {
+                throw new BusinessException(INSUFFICIENT_FUNDS, BAD_REQUEST);
             }
 
             source.setBalance(source.getBalance().subtract(amount));
@@ -77,6 +78,6 @@ public class TransferServiceImpl implements TransferService {
 
     private Customer findAccount(String account) {
         return customerService.findByAccount(account)
-                .orElseThrow(() -> new BusinessException("Account " + account + " not found", NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ACCOUNT_NOT_FOUND.formatted(account), NOT_FOUND));
     }
 }
