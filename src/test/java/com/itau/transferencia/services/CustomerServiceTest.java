@@ -2,7 +2,7 @@ package com.itau.transferencia.services;
 
 import com.itau.transferencia.entities.Customer;
 import com.itau.transferencia.repositories.CustomerRepository;
-import com.itau.transferencia.requests.CustomerRequest;
+import com.itau.transferencia.dtos.CustomerDTO;
 import com.itau.transferencia.services.impl.CustomerServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,7 +33,7 @@ class CustomerServiceTest {
 
     @Test
     void create() {
-        var customerRequest = new CustomerRequest("Breno", "00000-1", BigDecimal.valueOf(100));
+        var customerRequest = new CustomerDTO("Breno", "00000-1", BigDecimal.valueOf(100));
         service.create(customerRequest);
 
         verify(repository).save(customerCaptor.capture());

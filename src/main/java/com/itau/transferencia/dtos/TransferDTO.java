@@ -1,4 +1,4 @@
-package com.itau.transferencia.requests;
+package com.itau.transferencia.dtos;
 
 import com.itau.transferencia.validations.AccountNumber;
 import jakarta.validation.constraints.Max;
@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
-public record TransferRequest(
+public record TransferDTO(
         @AccountNumber
         String destination,
 

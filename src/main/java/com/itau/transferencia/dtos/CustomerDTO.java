@@ -1,4 +1,4 @@
-package com.itau.transferencia.requests;
+package com.itau.transferencia.dtos;
 
 import com.itau.transferencia.validations.AccountNumber;
 import jakarta.validation.constraints.Min;
@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 
 import java.math.BigDecimal;
 
-public record CustomerRequest(
+public record CustomerDTO(
         @NotBlank(message = "Name is required")
         String name,
 
@@ -16,7 +16,7 @@ public record CustomerRequest(
         @Min(value = 0, message = "Balance must be positive")
         BigDecimal balance
 ) {
-    public CustomerRequest {
+    public CustomerDTO {
         balance = balance == null ? BigDecimal.ZERO : balance;
     }
 }

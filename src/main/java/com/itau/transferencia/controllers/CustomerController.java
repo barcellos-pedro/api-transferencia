@@ -2,8 +2,8 @@ package com.itau.transferencia.controllers;
 
 import com.itau.transferencia.entities.Customer;
 import com.itau.transferencia.helpers.HttpHelper;
-import com.itau.transferencia.requests.CustomerRequest;
-import com.itau.transferencia.requests.TransferRequest;
+import com.itau.transferencia.dtos.CustomerDTO;
+import com.itau.transferencia.dtos.TransferDTO;
 import com.itau.transferencia.responses.TransferResponse;
 import com.itau.transferencia.services.CustomerService;
 import com.itau.transferencia.services.TransferService;
@@ -41,7 +41,7 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity<Customer> create(@Valid @RequestBody CustomerRequest request) {
+    public ResponseEntity<Customer> create(@Valid @RequestBody CustomerDTO request) {
         var newCustomer = customerService.create(request);
         var location = HttpHelper.getLocation(newCustomer.getId());
         return ResponseEntity.created(location).body(newCustomer);
@@ -56,9 +56,9 @@ public class CustomerController {
     @PostMapping("/{account}/transfers")
     public ResponseEntity<TransferResponse> transfer(
             @PathVariable String account,
-            @Valid @RequestBody TransferRequest transferRequest
+            @Valid @RequestBody TransferDTO transferDTO
     ) {
-        var transfer = transferService.transfer(account, transferRequest);
+        var transfer = transferService.transfer(account, transferDTO);
         var response = TransferResponse.fromEntity(transfer);
         return ResponseEntity.status(CREATED).body(response);
     }

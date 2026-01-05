@@ -7,7 +7,7 @@ import com.itau.transferencia.exceptions.AccountNotFoundException;
 import com.itau.transferencia.exceptions.InsufficientFundsException;
 import com.itau.transferencia.exceptions.SameAccountException;
 import com.itau.transferencia.repositories.TransferRepository;
-import com.itau.transferencia.requests.TransferRequest;
+import com.itau.transferencia.dtos.TransferDTO;
 import com.itau.transferencia.responses.TransferResponse;
 import com.itau.transferencia.services.impl.TransferServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -53,7 +53,7 @@ class TransferServiceTest {
         var destinationCustomer = new Customer("Bruno", destinationAccount);
 
         var amount = BigDecimal.valueOf(50);
-        var transferRequest = new TransferRequest(destinationAccount, amount);
+        var transferRequest = new TransferDTO(destinationAccount, amount);
         var transfer = Transfer.ofCompleted(sourceCustomer, destinationCustomer, amount);
 
         when(customerService.findByAccount(sourceAccount)).thenReturn(Optional.of(sourceCustomer));
@@ -76,7 +76,7 @@ class TransferServiceTest {
     void transferFailsWhenSameAccount() {
         var account = "00005-5";
         var customer = new Customer("Robson", account, BigDecimal.valueOf(100));
-        var transferRequest = new TransferRequest(account, BigDecimal.valueOf(50));
+        var transferRequest = new TransferDTO(account, BigDecimal.valueOf(50));
         var failedTransfer = Transfer.ofFailed(customer, customer, transferRequest.amount());
 
         when(customerService.findByAccount(account)).thenReturn(Optional.of(customer));
@@ -91,7 +91,7 @@ class TransferServiceTest {
     void transferFailsWhenAccountNotFound() {
         var account = "00005-5";
         var errorMessage = ACCOUNT_NOT_FOUND.formatted(account);
-        var transferRequest = new TransferRequest(account, BigDecimal.valueOf(50));
+        var transferRequest = new TransferDTO(account, BigDecimal.valueOf(50));
         var failedTransfer = Transfer.ofFailed(null, null, transferRequest.amount());
 
         when(customerService.findByAccount(account)).thenReturn(Optional.empty());
@@ -112,7 +112,7 @@ class TransferServiceTest {
         var destinationCustomer = new Customer("Bruno", destinationAccount);
 
         var amount = BigDecimal.valueOf(50);
-        var transferRequest = new TransferRequest(destinationAccount, amount);
+        var transferRequest = new TransferDTO(destinationAccount, amount);
         var failedTransfer = Transfer.ofFailed(sourceCustomer, destinationCustomer, transferRequest.amount());
 
         when(customerService.findByAccount(sourceAccount)).thenReturn(Optional.of(sourceCustomer));

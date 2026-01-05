@@ -1,7 +1,7 @@
 package com.itau.transferencia.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.itau.transferencia.requests.CustomerRequest;
+import com.itau.transferencia.dtos.CustomerDTO;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -48,14 +48,14 @@ public class Customer {
         this.balance = BigDecimal.ZERO;
     }
 
-    public Customer(CustomerRequest customerRequest) {
-        this.name = customerRequest.name();
-        this.account = customerRequest.account();
-        this.balance = customerRequest.balance();
+    public Customer(CustomerDTO customerDTO) {
+        this.name = customerDTO.name();
+        this.account = customerDTO.account();
+        this.balance = customerDTO.balance();
     }
 
-    public static Customer fromRequest(CustomerRequest customerRequest) {
-        return new Customer(customerRequest);
+    public static Customer fromRequest(CustomerDTO customerDTO) {
+        return new Customer(customerDTO);
     }
 
     public static boolean isSameAccount(Customer customer, Customer other) {

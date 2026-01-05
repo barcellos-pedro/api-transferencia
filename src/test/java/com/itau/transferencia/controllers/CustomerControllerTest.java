@@ -3,8 +3,8 @@ package com.itau.transferencia.controllers;
 import com.itau.transferencia.enums.TransferStatus;
 import com.itau.transferencia.repositories.CustomerRepository;
 import com.itau.transferencia.repositories.TransferRepository;
-import com.itau.transferencia.requests.CustomerRequest;
-import com.itau.transferencia.requests.TransferRequest;
+import com.itau.transferencia.dtos.CustomerDTO;
+import com.itau.transferencia.dtos.TransferDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -91,7 +91,7 @@ class CustomerControllerTest {
     @Test
     void create() throws Exception {
         var account = "00009-9";
-        var request = new CustomerRequest("test", account, BigDecimal.ZERO);
+        var request = new CustomerDTO("test", account, BigDecimal.ZERO);
 
         mockMvc.perform(post("/v1/customers")
                         .contentType(APPLICATION_JSON)
@@ -108,7 +108,7 @@ class CustomerControllerTest {
 
     @Test
     void createFailsWithNegativeBalance() throws Exception {
-        var request = new CustomerRequest("Test", "12345-6", BigDecimal.valueOf(-10.00));
+        var request = new CustomerDTO("Test", "12345-6", BigDecimal.valueOf(-10.00));
 
         mockMvc.perform(post("/v1/customers")
                         .contentType(APPLICATION_JSON)
@@ -120,7 +120,7 @@ class CustomerControllerTest {
 
     @Test
     void createFailsWithInvalidAccountFormat() throws Exception {
-        var request = new CustomerRequest("Test", "123-4", BigDecimal.ZERO);
+        var request = new CustomerDTO("Test", "123-4", BigDecimal.ZERO);
 
         mockMvc.perform(post("/v1/customers")
                         .contentType(APPLICATION_JSON)
@@ -132,7 +132,7 @@ class CustomerControllerTest {
 
     @Test
     void createFailsWhenAccountAlreadyExists() throws Exception {
-        var request = new CustomerRequest("Pedro", "00001-1", BigDecimal.ZERO);
+        var request = new CustomerDTO("Pedro", "00001-1", BigDecimal.ZERO);
 
         mockMvc.perform(post("/v1/customers")
                         .contentType(APPLICATION_JSON)
@@ -144,7 +144,7 @@ class CustomerControllerTest {
 
     @Test
     void createFailsWhenNameIsMissing() throws Exception {
-        var request = new CustomerRequest("", "00009-9", BigDecimal.ZERO);
+        var request = new CustomerDTO("", "00009-9", BigDecimal.ZERO);
 
         mockMvc.perform(post("/v1/customers")
                         .contentType(APPLICATION_JSON)
@@ -180,7 +180,7 @@ class CustomerControllerTest {
     void transfer() throws Exception {
         var account = "00001-1";
         var destinationAccount = "00002-2";
-        var transferRequest = new TransferRequest(destinationAccount, BigDecimal.valueOf(50.00));
+        var transferRequest = new TransferDTO(destinationAccount, BigDecimal.valueOf(50.00));
 
         mockMvc.perform(post("/v1/customers/" + account + "/transfers")
                         .contentType(APPLICATION_JSON)
@@ -197,7 +197,7 @@ class CustomerControllerTest {
     void transferFailsWhenAccountNotFound() throws Exception {
         var account = "00001-1";
         var unknownAccount = "00003-1";
-        var transferRequest = new TransferRequest(unknownAccount, BigDecimal.valueOf(50.00));
+        var transferRequest = new TransferDTO(unknownAccount, BigDecimal.valueOf(50.00));
 
         mockMvc.perform(post("/v1/customers/" + account + "/transfers")
                         .contentType(APPLICATION_JSON)
@@ -211,7 +211,7 @@ class CustomerControllerTest {
     void transferFailsWithInsufficientFunds() throws Exception {
         var account = "00001-1";
         var destinationAccount = "00002-2";
-        var transferRequest = new TransferRequest(destinationAccount, BigDecimal.valueOf(10000.00));
+        var transferRequest = new TransferDTO(destinationAccount, BigDecimal.valueOf(10000.00));
 
         var initialBalance = customerRepository.findByAccount(account).get().getBalance();
         assertEquals(new BigDecimal("100.00"), initialBalance);
@@ -230,7 +230,7 @@ class CustomerControllerTest {
     @Test
     void transferFailsWhenSourceIsSameAsDestination() throws Exception {
         var account = "00001-1";
-        var transferRequest = new TransferRequest(account, BigDecimal.valueOf(10.00));
+        var transferRequest = new TransferDTO(account, BigDecimal.valueOf(10.00));
 
         mockMvc.perform(post("/v1/customers/" + account + "/transfers")
                         .contentType(APPLICATION_JSON)

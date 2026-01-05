@@ -1,13 +1,13 @@
 package com.itau.transferencia.services;
 
 import com.itau.transferencia.entities.Customer;
-import com.itau.transferencia.requests.CustomerRequest;
+import com.itau.transferencia.dtos.CustomerDTO;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface CustomerService {
-    Customer create(CustomerRequest request);
+    Customer create(CustomerDTO request);
 
     List<Customer> findAll();
 

@@ -1,7 +1,7 @@
 package com.itau.transferencia.services.impl;
 
 import com.itau.transferencia.entities.Customer;
-import com.itau.transferencia.requests.CustomerRequest;
+import com.itau.transferencia.dtos.CustomerDTO;
 import com.itau.transferencia.repositories.CustomerRepository;
 import com.itau.transferencia.services.CustomerService;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer create(CustomerRequest request) {
+    public Customer create(CustomerDTO request) {
         return repository.save(Customer.fromRequest(request));
     }
 
