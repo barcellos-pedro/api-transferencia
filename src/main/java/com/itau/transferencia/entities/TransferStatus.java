@@ -5,17 +5,9 @@ public enum TransferStatus {
     PENDING("Pending"),
     FAILED("Failed");
 
-    private String status;
+    private final String status;
 
     TransferStatus(String status) {
-        this.status = status;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
         this.status = status;
     }
 
