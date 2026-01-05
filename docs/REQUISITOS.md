@@ -46,6 +46,8 @@ Entidades/Tabelas do domínio da solução
 
 ### Cliente
 
+Table: customers
+
 - id (único)
 - nome
 - número da conta (único)
@@ -53,8 +55,11 @@ Entidades/Tabelas do domínio da solução
 
 ### Transferência
 
+Table: transfers
+
 - id
-- id_cliente_origem
-- id_cliente_destino
-- valor
-- data
+- source_id
+- destination_id
+- amount
+- created_at
+- status

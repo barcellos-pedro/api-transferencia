@@ -3,7 +3,7 @@ package com.itau.transferencia.http.responses;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.itau.transferencia.entities.Customer;
 import com.itau.transferencia.entities.Transfer;
-import com.itau.transferencia.entities.TransferStatus;
+import com.itau.transferencia.enums.TransferStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
