@@ -3,7 +3,9 @@ package com.itau.transferencia.services;
 import com.itau.transferencia.entities.Customer;
 import com.itau.transferencia.entities.Transfer;
 import com.itau.transferencia.entities.TransferStatus;
-import com.itau.transferencia.exceptions.BusinessException;
+import com.itau.transferencia.exceptions.AccountNotFoundException;
+import com.itau.transferencia.exceptions.InsufficientFundsException;
+import com.itau.transferencia.exceptions.SameAccountException;
 import com.itau.transferencia.http.requests.TransferRequest;
 import com.itau.transferencia.http.responses.TransferResponse;
 import com.itau.transferencia.repositories.TransferRepository;
@@ -79,7 +81,7 @@ class TransferServiceTest {
 
         when(customerService.findByAccount(account)).thenReturn(Optional.of(customer));
 
-        var exception = assertThrows(BusinessException.class, () -> service.transfer(account, transferRequest));
+        var exception = assertThrows(SameAccountException.class, () -> service.transfer(account, transferRequest));
         assertThat(exception.getMessage()).isEqualTo("Cannot transfer to the same account.");
         assertThat(exception.getHttpStatus()).isEqualTo(BAD_REQUEST);
         verify(transferLogService).save(failedTransfer);
@@ -94,7 +96,7 @@ class TransferServiceTest {
 
         when(customerService.findByAccount(account)).thenReturn(Optional.empty());
 
-        var exception = assertThrows(BusinessException.class, () -> service.transfer(account, transferRequest));
+        var exception = assertThrows(AccountNotFoundException.class, () -> service.transfer(account, transferRequest));
 
         assertThat(exception.getMessage()).isEqualTo(errorMessage);
         assertThat(exception.getHttpStatus()).isEqualTo(NOT_FOUND);
@@ -116,7 +118,7 @@ class TransferServiceTest {
         when(customerService.findByAccount(sourceAccount)).thenReturn(Optional.of(sourceCustomer));
         when(customerService.findByAccount(destinationAccount)).thenReturn(Optional.of(destinationCustomer));
 
-        var exception = assertThrows(BusinessException.class, () -> service.transfer(sourceAccount, transferRequest));
+        var exception = assertThrows(InsufficientFundsException.class, () -> service.transfer(sourceAccount, transferRequest));
 
         assertThat(exception.getMessage()).isEqualTo("Insufficient funds for this operation.");
         assertThat(exception.getHttpStatus()).isEqualTo(BAD_REQUEST);
