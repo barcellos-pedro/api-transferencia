@@ -81,8 +81,7 @@ auditoria. Isso garante a integridade do histórico para conformidade bancária.
 
 Para atender ao requisito de controle de concorrência na operação de transferência, foi implementado:
 
-* **Pessimistic Locking** (ou **Optimistic Locking** com `@Version`): Para evitar o problema de "Lost Update" quando
-  dois processos tentam debitar da mesma conta simultaneamente.
+* **Optimistic Locking** com `@Version` quando dois processos tentam debitar da mesma conta simultaneamente.
 
 ### 3. Validação de Regras de Negócio
 
@@ -93,6 +92,7 @@ garantindo que o estado do banco de dados permaneça consistente.
 
 A cobertura de testes foi priorizada para garantir a confiabilidade das transferências:
 
+* **Testes CI/CD**: Execução dos testes unitários e de integração na pipeline após cada commit.
 * **Testes Unitários**: Validação de lógica de negócio e cálculos de saldo.
 * **Testes de Integração**: Fluxo completo de transferência simulando concorrência e rollback de banco de dados.
 
